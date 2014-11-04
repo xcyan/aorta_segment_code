@@ -7,9 +7,11 @@ function h = cnn_infer(x, weights, params)
 
 batchsize = size(x, 4);
 
+%numch == 1
+
 vishidlr = zeros(params.ws, params.ws, params.numhid, params.numch);
 for c = 1:params.numch,
-    vishidlr(:,:,:,c) = reshape(weights.vishid(end:-1:1, end:-1:1, c, :),[params.ws,params.ws,params.numhid]);
+    vishidlr(:,:,:,c) = reshape(weights.vishid(end:-1:1, end:-1:1, c, :),[params.ws,params.ws,params.numhid]); %end:-1:1 flips the images because using valid conv
 end
 
 hbiasmat = repmat(permute(weights.hidbias,[2 3 1]),[size(x,1)-params.ws+1, size(x,2)-params.ws+1, batchsize]);
@@ -35,6 +37,7 @@ else
     end
 end
 
+%use relu as activatin for everything besides output
 switch params.nonlinearity,
     case 'relu',
         h = max(0, h);
