@@ -3,12 +3,12 @@ function weights = cnn_train_lbfgs(xtrain, ytrain, params, xval, yval)
 
 % -- initialization
 weights = struct;
-weights.vishid = 0.01*randn(params.ws, params.ws, params.numch, params.numhid);
-weights.hidvis = 0.01*randn(params.ws, params.ws, params.numhid, params.numout);
-weights.hidhid = 0.01*randn(params.ws2, params.ws2, params.ch,
+weights.vishid = 0.01*randn(params.ws1, params.ws1, params.numch, params.numhid1);
+weights.hidhid = 0.01*randn(params.ws2, params.ws2, params.numch, params.numhid2)
+weights.hidvis = 0.01*randn(params.ws3, params.ws3, params.numhid2, params.numout);
   params.numhid2);
-weights.hid1bias = zeros(params.numhid, 1);
-weights.hid2bias = zeros(params.ws2, params.ws2, params.ch);
+weights.hid1bias = zeros(params.numhid1, 1);
+weights.hid2bias = zeros(params.numhid2, 1);
 weights.visbias = zeros(params.rs, params.cs, params.numout);
 
 
