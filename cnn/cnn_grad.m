@@ -1,6 +1,5 @@
 function [cost, grad] = cnn_grad(x, y, weights, params)
 
-
 % -- feed-forward inference
 h = cnn_infer(x, weights, params);
 yhat = cnn_recon(h, weights, params);
