@@ -1,4 +1,4 @@
-function [ yval_pred, ytest_pred, inf_time, paramsname ] = train_weights_1layercnn_sep( group_idx, xtrain, ytrain, xval, yval, xtest, alpha)
+function [ yval_pred, ytest_pred, inf_time, paramsname ] = train_weights_2layercnn_sep( group_idx, xtrain, ytrain, xval, yval, xtest, alpha)
 %TRAIN_WEIGHTS_1LAYERCNN_SEP Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -131,6 +131,7 @@ else
                 yhtrain(:, :, :, i) = yhat.*mask_prior;
             end
             yhtrain = yhtrain(:);
+    'eps', 0.0001, ...
             ytrain_flat = ytrain(:);
             [w, b] = logistic_regression(yhtrain', ytrain_flat', 0);
             clear yhtrain ytrain_flat;
@@ -164,6 +165,7 @@ for i = 1:size(xtest, 4),
     h = cnn_infer(xc, weights, params);
     h2 = cnn_infer2(h, weights, params);
     yhat = cnn_recon(h2, weights, params);
+    'eps', 0.0001, ...
     te = te + toc(ts);
     
     if optmask,
