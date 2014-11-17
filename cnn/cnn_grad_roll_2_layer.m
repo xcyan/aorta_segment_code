@@ -22,7 +22,7 @@ grad = replicate_struct(weights, 0);
 dobj = (yhat - ytrain)/batchsize;
 
 % get db3
-grad.visbias = grad.visbias + sum(dobj, 4);
+grad.visbias = sum(dobj, 3);
 % get dw3
 for b = 1:size(weights.hidvis, 4),
     for c = 1:size(weights.hidvis, 3),
@@ -43,12 +43,13 @@ end
 dh2 = dh2.*h2.*(1-h2);
 
 % get db2
-grad.hid2bias = grad.hid2bias + permute(sum(sum(sum(dh2, 1), 2), 4), [3 1 2]); % figure this out
+%grad.hid2bias = grad.hid2bias + permute(sum(sum(sum(dh2, 1), 2), 4), [3 1 2]); % figure this out
+biasSum = sum(sum(sum(dh2,1),2),4);
+grad.hid2bias = biasSum(:);
 % get dw2
 for b = 1:size(weights.hidhid, 4)
     for c = 1:size(weights.hidhid, 3)
-        grad.hidhid(:,:,c,b) = grad.hidhid(:,:,c,b) + convn(h1(:,:,c,:), ...
-        dh2(end:-1:1,end:-1:1,c,end:-1:1), 'valid');
+        grad.hidhid(:,:,c,b) = grad.hidhid(:,:,c,b) + convn(h1(:,:,c,:),dh2(end:-1:1,end:-1:1,c,end:-1:1),'valid');
     end 
 end
 
@@ -65,7 +66,9 @@ end
 dh1 = dh1.*h1.*(1-h1);
 
 % get db1
-grad.hidbias = grad.hidbias + permute(sum(sum(sum(dh1, 1), 2), 4), [3 1 2]);
+%grad.hidbias = grad.hidbias + permute(sum(sum(sum(dh1, 1), 2), 4), [3 1 2]);
+biasSum = sum(sum(sum(dh1, 1),2),4);
+grad.hidbias = biasSum(:);
 % get dw1
 for b = 1:size(weights.vishid, 4),
     for c = 1:size(weights.vishid, 3),
@@ -76,7 +79,7 @@ end
 grad = cnn_roll2(grad);
 roll_weight = cnn_roll2(weights);
 
-%gradient_checking(@(x) cnn_cost(x, xtrain, ytrain, params), roll_weight, grad); 
+gradient_checking(@(x) cnn_cost(x, xtrain, ytrain, params), roll_weight, grad); 
 
 % -- evaluatexval
 if exist('xval', 'var'),

@@ -117,7 +117,9 @@ else
         if strcmp(params.optimize, 'sgd'),
             weights = cnn_train(xtrain, ytrain, params, xval, yval);
         elseif strcmp(params.optimize, 'lbfgs'),
+            disp('Training with lbfgs');
             weights = cnn_train_lbfgs_2_layer(xtrain, ytrain, params, xval, yval);
+            disp('Finished training');
         end
         % Learn additional classifier with mask prior
         if optmask,
