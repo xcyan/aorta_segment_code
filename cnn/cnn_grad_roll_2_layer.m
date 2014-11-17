@@ -40,6 +40,8 @@ for b = 1:size(weights.hidvis, 4),
   end
 end
 
+dh2 = dh2.*h2.*(1-h2);
+
 % get db2
 grad.hid2bias = grad.hid2bias + permute(sum(sum(sum(dh2, 1), 2), 4), [3 1 2]); % figure this out
 % get dw2
@@ -55,16 +57,12 @@ end
 dh1 = zeros(size(h1));
 for b = 1:size(weights.hidhid, 4),
     for c = 1:size(weights.hidhid, 3),
-        dh1(:,:,c,:) = convn(dh2(end:-1:1,end:-1:1,b,end:-1:1), weights.hidhid(:,:,c,b), 'full');
+        % Changed this according to new derivations
+        dh1(:,:,c,:) = convn(weights.hidhid(:,:,c,b), dh2(:,:,b,:), 'full');
     end
 end
 
-switch params.nonlinearity,
-    case 'relu',
-        dh1 = dh1.*(h1 > 0);
-    case 'sigmoid',
-        dh1 = dh1.*h1.*(1-h1);
-end
+dh1 = dh1.*h1.*(1-h1);
 
 % get db1
 grad.hidbias = grad.hidbias + permute(sum(sum(sum(dh1, 1), 2), 4), [3 1 2]);
@@ -78,7 +76,7 @@ end
 grad = cnn_roll2(grad);
 roll_weight = cnn_roll2(weights);
 
-gradient_checking(@(x) cnn_cost(x, xtrain, ytrain, params), roll_weight, grad); 
+%gradient_checking(@(x) cnn_cost(x, xtrain, ytrain, params), roll_weight, grad); 
 
 % -- evaluatexval
 if exist('xval', 'var'),

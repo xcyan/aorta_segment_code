@@ -9,7 +9,7 @@ batchsize = size(x, 4);
 
 %numch == 1
 
-hidhidlr = zeros(params.ws2, params.ws2, params.numhid2, params.numch);
+hidhidlr = zeros(params.ws2, params.ws2, params.numhid2, params.numhid);
 
 for c = 1:params.numch,
     hidhidlr(:,:,:,c) = reshape(weights.hidhid(end:-1:1, end:-1:1, c, :),[params.ws2,params.ws2,params.numhid2]); %end:-1:1 flips the images because using valid conv
@@ -24,20 +24,13 @@ h1 = x;
 h = hbiasmat;
 
 % fast
-for c = 1:params.numhid,
-    for d = 1:params.numhid2,
-        h(:,:,d,:) = h(:,:,d,:) + convn(h1(:,:,c,:), hidhidlr(:,:,d,c), 'valid'); %nate thinks flip c and d
+for c = 1:params.numhid2,
+    for d = 1:params.numhid,
+        h(:,:,c,:) = h(:,:,c,:) + convn(h1(:,:,d,:), hidhidlr(:,:,c, d), 'valid'); 
     end
 end
 
-
-%use relu as activatin for everything besides output
-switch params.nonlinearity,
-    case 'relu',
-        h = max(0, h);
-    case 'sigmoid',
-        h = sigmoid(h);
-end
+h = sigmoid(h);
 
 
 return;

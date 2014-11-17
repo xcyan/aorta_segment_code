@@ -37,13 +37,8 @@ else
     end
 end
 
-%use relu as activatin for everything besides output
-switch params.nonlinearity,
-    case 'relu',
-        h = max(0, h);
-    case 'sigmoid',
-        h = sigmoid(h);
-end
+h = sigmoid(h);
+
 
 
 return;
