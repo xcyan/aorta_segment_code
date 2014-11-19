@@ -1,5 +1,5 @@
 clc;
-clear all;
+%clear all;
 startup;
 for i=1:3
      data_preprocess( i, 0 ); %% (x,y): y=1 for DEBUG MODE

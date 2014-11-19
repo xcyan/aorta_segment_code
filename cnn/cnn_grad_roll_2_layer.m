@@ -49,7 +49,7 @@ grad.hid2bias = biasSum(:);
 % get dw2
 for b = 1:size(weights.hidhid, 4)
     for c = 1:size(weights.hidhid, 3)
-        grad.hidhid(:,:,c,b) = grad.hidhid(:,:,c,b) + convn(h1(:,:,c,:),dh2(end:-1:1,end:-1:1,c,end:-1:1),'valid');
+        grad.hidhid(:,:,c,b) = grad.hidhid(:,:,c,b) + convn(h1(:,:,c,:),dh2(end:-1:1,end:-1:1,b,end:-1:1),'valid');
     end 
 end
 
@@ -59,7 +59,7 @@ dh1 = zeros(size(h1));
 for b = 1:size(weights.hidhid, 4),
     for c = 1:size(weights.hidhid, 3),
         % Changed this according to new derivations
-        dh1(:,:,c,:) = convn(weights.hidhid(:,:,c,b), dh2(:,:,b,:), 'full');
+        dh1(:,:,c,:) = convn(dh2(:,:,b,:), weights.hidhid(:,:,c,b), 'full');
     end
 end
 
@@ -76,9 +76,16 @@ for b = 1:size(weights.vishid, 4),
     end
 end
 
-grad = cnn_roll2(grad);
-roll_weight = cnn_roll2(weights);
+%FOR TESTING
+grad.hidbias = zeros(size(grad.hidbias));
+grad.hid2bias = zeros(size(grad.hid2bias));
+grad.visbias = zeros(size(grad.visbias));
+%END FOR TESTING
 
+grad = cnn_roll2(grad);
+
+roll_weight = cnn_roll2(weights);
+disp('blah');
 gradient_checking(@(x) cnn_cost(x, xtrain, ytrain, params), roll_weight, grad); 
 
 % -- evaluatexval
