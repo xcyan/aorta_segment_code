@@ -19,23 +19,13 @@ hbiasmat = reshape(hbiasmat, [size(x,1)-params.ws+1, size(x,2)-params.ws+1, para
 
 
 h = hbiasmat;
-if 0,
-    % slow
-    for c = 1:params.numch,
-        for d = 1:params.numhid,
-            for n = 1:batchsize,
-                h(:,:,d,n) = h(:,:,d,n) + conv2(x(:,:,c,n), vishidlr(:,:,d,c), 'valid');
-            end
-        end
-    end
-else
-    % fast
-    for c = 1:params.numch,
-        for d = 1:params.numhid,
-            h(:,:,d,:) = h(:,:,d,:) + convn(x(:,:,c,:), vishidlr(:,:,d,c), 'valid');
-        end
+
+for c = 1:params.numch,
+    for d = 1:params.numhid,
+        h(:,:,d,:) = h(:,:,d,:) + convn(x(:,:,c,:), vishidlr(:,:,d,c), 'valid');
     end
 end
+
 
 h = sigmoid(h);
 

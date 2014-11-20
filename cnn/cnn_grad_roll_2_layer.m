@@ -22,7 +22,7 @@ grad = replicate_struct(weights, 0);
 dobj = (yhat - ytrain)/batchsize;
 
 % get db3
-grad.visbias = sum(dobj, 3);
+grad.visbias = sum(dobj, 4);
 % get dw3
 for b = 1:size(weights.hidvis, 4),
     for c = 1:size(weights.hidvis, 3),
@@ -59,7 +59,7 @@ dh1 = zeros(size(h1));
 for b = 1:size(weights.hidhid, 4),
     for c = 1:size(weights.hidhid, 3),
         % Changed this according to new derivations
-        dh1(:,:,c,:) = convn(dh2(:,:,b,:), weights.hidhid(:,:,c,b), 'full');
+        dh1(:,:,b,:) = dh1(:,:,b,:) + convn(dh2(:,:,c,:), weights.hidhid(:,:,b,c), 'full');
     end
 end
 
@@ -77,16 +77,16 @@ for b = 1:size(weights.vishid, 4),
 end
 
 %FOR TESTING
-grad.hidbias = zeros(size(grad.hidbias));
-grad.hid2bias = zeros(size(grad.hid2bias));
-grad.visbias = zeros(size(grad.visbias));
+%grad.hidbias = zeros(size(grad.hidbias));
+%grad.hid2bias = zeros(size(grad.hid2bias));
+%grad.visbias = zeros(size(grad.visbias));
 %END FOR TESTING
 
 grad = cnn_roll2(grad);
 
 roll_weight = cnn_roll2(weights);
 disp('blah');
-gradient_checking(@(x) cnn_cost(x, xtrain, ytrain, params), roll_weight, grad); 
+%gradient_checking(@(x) cnn_cost(x, xtrain, ytrain, params), roll_weight, grad); 
 
 % -- evaluatexval
 if exist('xval', 'var'),

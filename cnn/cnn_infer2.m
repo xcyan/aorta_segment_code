@@ -11,7 +11,7 @@ batchsize = size(x, 4);
 
 hidhidlr = zeros(params.ws2, params.ws2, params.numhid2, params.numhid);
 
-for c = 1:params.numch,
+for c = 1:params.numhid2,
     hidhidlr(:,:,:,c) = reshape(weights.hidhid(end:-1:1, end:-1:1, c, :),[params.ws2,params.ws2,params.numhid2]); %end:-1:1 flips the images because using valid conv
 end
 
@@ -26,7 +26,7 @@ h = hbiasmat;
 % fast
 for c = 1:params.numhid2,
     for d = 1:params.numhid,
-        h(:,:,c,:) = h(:,:,c,:) + convn(h1(:,:,d,:), hidhidlr(:,:,c, d), 'valid'); 
+        h(:,:,c,:) = h(:,:,c,:) + convn(h1(:,:,d,:), hidhidlr(:,:,c, d), 'valid'); %nate flips c and d
     end
 end
 

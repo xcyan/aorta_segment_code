@@ -2,6 +2,7 @@ function weights = cnn_train_lbfgs_2_layer(xtrain, ytrain, params, xval, yval)
 
 
 % -- initialization
+rng(1)
 weights = struct;
 weights.vishid = 0.01*randn(params.ws, params.ws, params.numch, params.numhid);
 weights.hidhid = 0.01*randn(params.ws2, params.ws2, params.numhid, params.numhid2)
@@ -10,6 +11,7 @@ weights.hidbias = zeros(params.numhid, 1);
 weights.hid2bias = zeros(params.numhid2, 1);
 weights.visbias = zeros(params.rs, params.cs, params.numout);
 
+weights.vishid
 
 addpath(genpath('utils/minFunc_2012/'));
 theta = cnn_roll2(weights);

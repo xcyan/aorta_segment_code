@@ -10,7 +10,7 @@ if ~exist('DEBUG', 'var'),
 end
 
 if ~exist('group_idx_range', 'var'),
-    group_idx_range = 1;
+    group_idx_range = 4;
 end
 
 if ~exist('flag_save','var'),

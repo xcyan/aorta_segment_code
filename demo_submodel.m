@@ -7,7 +7,7 @@ end
 %% Preprocessing step: normalized CT scans are saved in the folder called "normalized_data/"
 
 %framework_train_test_sep( 0, 13, @train_weights_1layercnn_sep , @fit_HUscale, 0, 0.1, 1);
-framework_train_test_submodel( 0, 13, @train_weights_2layercnn_sep , @fit_HUscale, 0, 0.1, 0);
+framework_train_test_submodel( 0, 4, @train_weights_2layercnn_sep , @fit_HUscale, 0, 0.1, 0);
 %% TODO: implement another function for segmenting aorta in each group
 %% 1) pls feel free to modify 'train_weights_1layercnn_sep.m'
 %% or even write your own model for aorta segmentation (group-based)
