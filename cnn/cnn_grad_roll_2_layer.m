@@ -85,7 +85,7 @@ end
 grad = cnn_roll2(grad);
 
 roll_weight = cnn_roll2(weights);
-disp('blah');
+
 %gradient_checking(@(x) cnn_cost(x, xtrain, ytrain, params), roll_weight, grad); 
 
 % -- evaluatexval

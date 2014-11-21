@@ -34,7 +34,7 @@ if ~exist('ws3', 'var')
 
 if ~exist('optmask', 'var'),
     % post processing with mask
-    optmask = 1;
+    optmask = 0;
 end
 
 if ~optmask,
@@ -109,8 +109,11 @@ mkdir(MODELSRC);
 if (Flag_caffe),
     
 else
-    if exist([MODELSRC sprintf('%s_al%g.mat', params.fname, alpha)], 'file'),
-        load([MODELSRC sprintf('%s_al%g.mat', params.fname, alpha)], 'params', 'weights', 'w', 'b', 'mask_prior');
+    sprintf('%s_al%g.mat', params.fname, alpha)
+    %if exist([MODELSRC sprintf('%s_al%g.mat', params.fname, alpha)], 'file'),
+    if 1
+        %load([MODELSRC sprintf('%s_al%g.mat', params.fname, alpha)], 'params', 'weights', 'w', 'b', 'mask_prior');
+        load([MODELSRC sprintf('%s.mat', params.fname)], 'params', 'weights', 'w', 'b', 'mask_prior');
     else
         
         % Learn CNN weights
@@ -150,7 +153,7 @@ for i = 1:size(xval, 4),
     
     h = cnn_infer(xc, weights, params);
     h2 = cnn_infer2(h, weights, params);
-    yhat = cnn_recon2(h2, weights, params);
+    yhat = cnn_recon(h2, weights, params);
     
     if optmask,
         yhat = sigmoid(w*yhat.*mask_prior + b);
@@ -167,7 +170,6 @@ for i = 1:size(xtest, 4),
     h = cnn_infer(xc, weights, params);
     h2 = cnn_infer2(h, weights, params);
     yhat = cnn_recon(h2, weights, params);
-    'eps', 0.0001, ...
     te = te + toc(ts);
     
     if optmask,
