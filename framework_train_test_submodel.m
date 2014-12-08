@@ -18,7 +18,7 @@ if ~exist('flag_save','var'),
 end
 
 if ~exist('flag_visualize','var')
-    flag_visualize = 0;
+    flag_visualize = 1;
 end
 
 if ~exist('alpha', 'var'),
@@ -93,6 +93,7 @@ for group_idx = group_idx_range,
     end
     
     %% Display
+    disp('bout to display');
     fprintf('AP: val = %g (std %g), test = %g (std %g) (alpha = %g) (inference time per image = %g, %s)\n', ...
         mean(ap_val), std(ap_val), mean(ap_test), std(ap_test), alpha, inf_time, paramsname);
     fprintf('ACC: val = %g (std %g), test = %g (std %g) (alpha = %g) (inference time per image = %g, %s)\n', ...
@@ -109,7 +110,10 @@ for group_idx = group_idx_range,
         fclose(fid);
     end
     
+    disp('just displayed');
+    
     %% Visualization
+    flag_visualize = 1;
     if flag_visualize,
         mkdir('vis/cnn');
         mkdir(['vis/cnn/' paramsname '/']);
