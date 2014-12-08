@@ -69,7 +69,7 @@ for t = 1:maxiter,
     fprintf('epoch [%d/%d] : cost = %g (time per epoch = %g)\n', t, maxiter, history.cost(t), te_epoch);
 
     if exist('xval', 'var'),
-        [~, ~, ap] = cnn_evaluate(xval, yval, weights, params);
+        [~, ~, ap] = cnn_evaluate2(xval, yval, weights, params);
         history.val_ap(t) = ap;
         fprintf('epoch [%d/%d] : val AP = %g\n', t, maxiter, ap);
     end

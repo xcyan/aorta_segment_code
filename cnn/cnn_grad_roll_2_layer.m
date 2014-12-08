@@ -17,6 +17,9 @@ cost = cross_entropy(ytrain, yhat)/batchsize;
 grad = replicate_struct(weights, 0);
 % -- backprop
 
+% Set gpu
+gpuDevice(3);
+
 % objective -> h2
 % get dh3
 dobj = (yhat - ytrain)/batchsize;
@@ -26,7 +29,7 @@ grad.visbias = sum(dobj, 4);
 % get dw3
 for b = 1:size(weights.hidvis, 4),
     for c = 1:size(weights.hidvis, 3),
-        grad.hidvis(:,:,c,b) = grad.hidvis(:,:,c,b) + convn(dobj(:,:,b,:), h2(end:-1:1,end:-1:1,c,end:-1:1), 'valid');
+        grad.hidvis(:,:,c,b) = grad.hidvis(:,:,c,b) + gather(convn(gpuArray(dobj(:,:,b,:)), gpuArray(h2(end:-1:1,end:-1:1,c,end:-1:1)), 'valid'));
     end
 end
 
@@ -36,7 +39,7 @@ end
 dh2 = zeros(size(h2));
 for b = 1:size(weights.hidvis, 4),
   for c = 1:size(weights.hidvis, 3),
-    dh2(:,:,c,:) = convn(dobj(:,:,b,:), weights.hidvis(end:-1:1,end:-1:1,c,b),'valid');
+    dh2(:,:,c,:) = gather(convn(gpuArray(dobj(:,:,b,:)), gpuArray(weights.hidvis(end:-1:1,end:-1:1,c,b)),'valid'));
   end
 end
 
@@ -49,7 +52,7 @@ grad.hid2bias = biasSum(:);
 % get dw2
 for b = 1:size(weights.hidhid, 4)
     for c = 1:size(weights.hidhid, 3)
-        grad.hidhid(:,:,c,b) = grad.hidhid(:,:,c,b) + convn(h1(:,:,c,:),dh2(end:-1:1,end:-1:1,b,end:-1:1),'valid');
+        grad.hidhid(:,:,c,b) = grad.hidhid(:,:,c,b) + gather(convn(gpuArray(h1(:,:,c,:)) ,gpuArray(dh2(end:-1:1,end:-1:1,b,end:-1:1)),'valid'));
     end 
 end
 
@@ -59,7 +62,7 @@ dh1 = zeros(size(h1));
 for b = 1:size(weights.hidhid, 4),
     for c = 1:size(weights.hidhid, 3),
         % Changed this according to new derivations
-        dh1(:,:,b,:) = dh1(:,:,b,:) + convn(dh2(:,:,c,:), weights.hidhid(:,:,b,c), 'full');
+        dh1(:,:,b,:) = dh1(:,:,b,:) + gather(convn(gpuArray(dh2(:,:,c,:)), gpuArray(weights.hidhid(:,:,b,c)), 'full'));
     end
 end
 
@@ -72,7 +75,7 @@ grad.hidbias = biasSum(:);
 % get dw1
 for b = 1:size(weights.vishid, 4),
     for c = 1:size(weights.vishid, 3),
-        grad.vishid(:,:,c,b) = grad.vishid(:,:,c,b) + convn(xtrain(:,:,c,:), dh1(end:-1:1,end:-1:1,b,end:-1:1), 'valid');
+        grad.vishid(:,:,c,b) = grad.vishid(:,:,c,b) + gather(convn(gpuArray(xtrain(:,:,c,:)), gpuArray(dh1(end:-1:1,end:-1:1,b,end:-1:1)), 'valid'));
     end
 end
 
@@ -90,11 +93,10 @@ roll_weight = cnn_roll2(weights);
 
 % -- evaluatexval
 if exist('xval', 'var'),
-    [~, ~, ap] = cnn_evaluate(xval, yval, weights, params);
+    [~, ~, ap] = cnn_evaluate2(xval, yval, weights, params);
     fprintf('val AP = %g\n', ap);
 end
 
 
 return;
-
 

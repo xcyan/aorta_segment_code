@@ -26,7 +26,7 @@ h = hbiasmat;
 % fast
 for c = 1:params.numhid2,
     for d = 1:params.numhid,
-        h(:,:,c,:) = h(:,:,c,:) + convn(h1(:,:,d,:), hidhidlr(:,:,c, d), 'valid'); %nate flips c and d
+        h(:,:,c,:) = h(:,:,c,:) + gather(convn(gpuArray(h1(:,:,d,:)), gpuArray(hidhidlr(:,:,c, d)), 'valid')); %nate flips c and d
     end
 end
 

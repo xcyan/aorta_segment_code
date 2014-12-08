@@ -19,7 +19,7 @@ end
 
 if ~exist('optmask', 'var'),
     % post processing with mask
-    optmask = 1;
+    optmask = 0;
 end
 
 if ~optmask,
@@ -91,8 +91,9 @@ mkdir(MODELSRC);
 if (Flag_caffe),
     
 else
-    if 0 && exist([MODELSRC sprintf('%s_al%g.mat', params.fname, alpha)], 'file'),
-        load([MODELSRC sprintf('%s_al%g.mat', params.fname, alpha)], 'params', 'weights', 'w', 'b', 'mask_prior');
+    [MODELSRC sprintf('%s.mat', params.fname)]
+    if exist( [MODELSRC sprintf('%s.mat', params.fname)],'file'),
+        load([MODELSRC sprintf('%s.mat', params.fname)], 'params', 'weights', 'w', 'b', 'mask_prior');
     else
         
         % Learn CNN weights

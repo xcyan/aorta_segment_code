@@ -22,7 +22,7 @@ options.method = 'lbfgs';
 options.maxiter = params.maxiter;
 
 
-opttheta = minFunc(@(p) cnn_grad_roll_2_layer(p, xtrain (:,:,:,1:3), ytrain(:,:,:,1:3), params, xval, yval), theta, options);
+opttheta = minFunc(@(p) cnn_grad_roll_2_layer(p, xtrain (:,:,:,:), ytrain(:,:,:,:), params, xval, yval), theta, options);
 weights = cnn_unroll2(opttheta, params); 
 
 

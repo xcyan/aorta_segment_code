@@ -20,7 +20,7 @@ else
     % fast
     for b = 1:params.numhid,
         for c = 1:params.numout,
-            y(:,:,c,:) = y(:,:,c,:) + convn(h(:,:,b,:), hidvis(:,:,b,c), 'full');
+            y(:,:,c,:) = y(:,:,c,:) + gather(convn(gpuArray(h(:,:,b,:)), gpuArray(hidvis(:,:,b,c)), 'full'));
         end
     end
 end

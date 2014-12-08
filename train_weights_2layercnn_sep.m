@@ -20,7 +20,8 @@ end
 
 if ~exist('ws1', 'var'),
     % filter size
-    ws = 8;
+    %ws = 8;
+    ws = 5;
 end
 
 if ~exist('ws2', 'var'), 
@@ -30,7 +31,8 @@ end
 
 if ~exist('ws3', 'var')
     % Output layer filter size
-    ws3 = 23; %check this
+    %ws3 = 23; %check this
+    ws3 = 20;
 
 if ~exist('optmask', 'var'),
     % post processing with mask
@@ -91,7 +93,7 @@ params = struct(...
     'nonlinearity', 'relu', ...
     'eps', 0.0001, ...
     'eps_decay', 0.01, ...
-    'maxiter', 200, ...
+    'maxiter', 600, ...
     'batchsize', 10, ...
     'momentum_change', 0, ...
     'momentum_init', 0.33, ...
@@ -109,11 +111,24 @@ mkdir(MODELSRC);
 if (Flag_caffe),
     
 else
-    sprintf('%s_al%g.mat', params.fname, alpha)
-    %if exist([MODELSRC sprintf('%s_al%g.mat', params.fname, alpha)], 'file'),
-    if 1
+    %sprintf('%s_al%g.mat', params.fname, alpha)
+    params.fname = 'weights_08-Dec-2014TRAINED';
+    MODELSRC = '';
+    if exist([MODELSRC sprintf('%s.mat', params.fname)], 'file'),
         %load([MODELSRC sprintf('%s_al%g.mat', params.fname, alpha)], 'params', 'weights', 'w', 'b', 'mask_prior');
         load([MODELSRC sprintf('%s.mat', params.fname)], 'params', 'weights', 'w', 'b', 'mask_prior');
+       	new_weights = struct; 
+        using_nate = 1;
+        if using_nate
+	      new_weights.vishid = weights.inToHidFilters;
+              new_weights.hidbias = weights.inToHidBias; 
+              new_weights.hidhid = weights.hidToHidFilters;
+              new_weights.hid2bias = weights.hidToHidBias;
+              new_weights.hidvis = weights.hidToOutFilters;
+              new_weights.visbias = weights.hidToOutBias;
+	      new_weights.vishid = reshape(new_weights.vishid, [params.ws, params.ws, params.numch, params.numhid]);
+              weights = new_weights;
+        end
     else
         
         % Learn CNN weights

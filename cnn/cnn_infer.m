@@ -22,7 +22,7 @@ h = hbiasmat;
 
 for c = 1:params.numch,
     for d = 1:params.numhid,
-        h(:,:,d,:) = h(:,:,d,:) + convn(x(:,:,c,:), vishidlr(:,:,d,c), 'valid');
+        h(:,:,d,:) = h(:,:,d,:) + gather(convn(gpuArray(x(:,:,c,:)), gpuArray(vishidlr(:,:,d,c)), 'valid'));
     end
 end
 
