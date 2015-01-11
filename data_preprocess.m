@@ -3,6 +3,7 @@ function [ output_args ] = data_preprocess( MODE, DEBUG )
 %   Detailed explanation goes here
 
 addpath('/mnt/neocortex/scratch/xcyan/aorta_seg')
+addpath('data');
 
 if ~exist('maxsize', 'var'),
     maxsize = 70;

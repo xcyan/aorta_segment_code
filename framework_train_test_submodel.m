@@ -109,6 +109,16 @@ for group_idx = group_idx_range,
         fclose(fid);
     end
     
+    
+    %%%% THIS CODE CREATES THE SEMI AUTOMATED INTERFACE I MENTIONED.
+    %%%% (Enable it with the flag below)
+    flag_tu = false;
+    if flag_tu
+        ap_val = touch_up(xval, yval, yval_pred);
+        ap_test = touch_up(xtest, ytest, ytest_pred);
+    end
+    
+    
     %% Visualization
     if flag_visualize,
         mkdir('vis/cnn');
