@@ -61,17 +61,6 @@ xval = permute(xval, [1 2 4 3]);
 yval = permute(yval, [1 2 4 3]);
 xtest = permute(xtest, [1 2 4 3]);
 
-%% Normalizing the intensity
-% if (Flag_HU),
-%
-% else
-%     [x_m, x_stds] = fit_normal_distribution(cat(4, xtrain, xval, xtest));
-%     xtrain = fit_normal_distribution(xtrain, x_m, x_stds);
-%     xval = fit_normal_distribution(xval, x_m, x_stds);
-%     xtest = fit_normal_distribution(xtest, x_m, x_stds);
-%     save('nd_params.mat','x_m','x_stds');
-% end
-
 if optmask,
     mask_prior = mean(ytrain, 4);
     mask_prior = max(0, tanh(mask_prior*alpha));
@@ -111,11 +100,8 @@ mkdir(MODELSRC);
 if (Flag_caffe),
     
 else
-    %sprintf('%s_al%g.mat', params.fname, alpha)
-    params.fname = 'weights_08-Dec-2014TRAINED';
     MODELSRC = '';
     if exist([MODELSRC sprintf('%s.mat', params.fname)], 'file'),
-        %load([MODELSRC sprintf('%s_al%g.mat', params.fname, alpha)], 'params', 'weights', 'w', 'b', 'mask_prior');
         load([MODELSRC sprintf('%s.mat', params.fname)], 'params', 'weights', 'w', 'b', 'mask_prior');
        	new_weights = struct; 
         using_nate = 1;
